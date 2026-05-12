@@ -8,18 +8,23 @@ const port = Number(process.env.PORT || 5000);
 const mongoUri = process.env.MONGODB_URI;
 
 if (!mongoUri) {
-  throw new Error("MONGODB_URI is missing in environment configuration.");
+  console.error("Startup aborted: MONGODB_URI is missing.");
+  console.error("Set MONGODB_URI in Render -> Service -> Environment.");
+  process.exit(1);
 }
 
 const startServer = async () => {
-  await connectToDatabase(mongoUri);
-  app.set("trust proxy", 1);
-  app.listen(port, () => {
-    console.log(`API server running on port ${port}`);
-  });
+  try {
+    await connectToDatabase(mongoUri);
+    app.set("trust proxy", 1);
+    app.listen(port, () => {
+      console.log(`API server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Startup aborted: database connection failed.");
+    console.error(error.message);
+    process.exit(1);
+  }
 };
 
-startServer().catch((error) => {
-  console.error("Failed to start server:", error.message);
-  process.exit(1);
-});
+startServer();
