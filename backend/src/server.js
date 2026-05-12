@@ -13,8 +13,9 @@ if (!mongoUri) {
 
 const startServer = async () => {
   await connectToDatabase(mongoUri);
+  app.set("trust proxy", 1);
   app.listen(port, () => {
-    console.log(`API server running on http://localhost:${port}`);
+    console.log(`API server running on port ${port}`);
   });
 };
 

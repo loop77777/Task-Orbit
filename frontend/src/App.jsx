@@ -9,7 +9,10 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const completedCount = useMemo(() => tasks.filter((task) => task.completed).length, [tasks]);
+  const completedCount = useMemo(
+    () => tasks.filter((task) => task.completed).length,
+    [tasks],
+  );
 
   const loadTasks = async () => {
     setError("");
@@ -31,7 +34,9 @@ export default function App() {
     try {
       if (editingTask) {
         const updated = await taskApi.update(editingTask.id, payload);
-        setTasks((prev) => prev.map((task) => (task.id === updated.id ? updated : task)));
+        setTasks((prev) =>
+          prev.map((task) => (task.id === updated.id ? updated : task)),
+        );
         setEditingTask(null);
       } else {
         const created = await taskApi.create(payload);
@@ -48,8 +53,12 @@ export default function App() {
     setBusy(true);
     setError("");
     try {
-      const updated = await taskApi.update(task.id, { completed: !task.completed });
-      setTasks((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
+      const updated = await taskApi.update(task.id, {
+        completed: !task.completed,
+      });
+      setTasks((prev) =>
+        prev.map((item) => (item.id === updated.id ? updated : item)),
+      );
     } catch (err) {
       setError(err.message);
     } finally {
@@ -80,9 +89,11 @@ export default function App() {
 
       <main className="content-wrap">
         <header className="hero card">
-          <p className="eyebrow">AP Mobility Assignment</p>
-          <h1>Task Orbit</h1>
-          <p>Track daily execution with a clean workflow across create, update, complete, and delete actions.</p>
+          <h1 className="eyebrow">Task Orbit</h1>
+          <p>
+            Track daily execution with a clean workflow across create, update,
+            complete, and delete actions.
+          </p>
           <div className="stats">
             <div>
               <span>Total Tasks</span>

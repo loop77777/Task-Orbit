@@ -76,3 +76,36 @@ Frontend variable in `frontend/.env`:
 - Backend returns normalized task payload with `id` for easier frontend handling.
 - Added lightweight error handling for invalid routes and API errors.
 - UI emphasizes readability and fast interactions while staying responsive.
+
+## Deployment (Render + Netlify)
+
+### Backend on Render
+
+1. Push this project to GitHub.
+2. In Render, create a new **Web Service** and point it to the repository.
+3. Set root directory to `backend`.
+4. Use:
+   - Build command: `npm install`
+   - Start command: `npm start`
+5. Add environment variables in Render:
+   - `MONGODB_URI=<your-mongodb-connection-string>`
+   - `CLIENT_ORIGIN=https://<your-netlify-site>.netlify.app`
+   - `NODE_ENV=production`
+6. Deploy and copy the backend URL (for example `https://task-orbit-api.onrender.com`).
+
+### Frontend on Netlify
+
+1. In Netlify, create a new site from the same repository.
+2. Set base directory to `frontend`.
+3. Build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+4. Add environment variable:
+   - `VITE_API_BASE_URL=https://<your-render-backend>.onrender.com/api`
+5. Deploy the site.
+
+### Final CORS Step
+
+- Update backend `CLIENT_ORIGIN` in Render to your exact Netlify URL.
+- If needed, you can allow multiple origins with comma-separated values:
+  - `CLIENT_ORIGIN=http://localhost:5173,https://<your-netlify-site>.netlify.app`
