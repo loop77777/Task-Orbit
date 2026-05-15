@@ -2,12 +2,20 @@ import { useEffect, useState } from "react";
 
 const initialState = { title: "", description: "" };
 
-export default function TaskForm({ onSubmit, editingTask, onCancelEdit, busy }) {
+export default function TaskForm({
+  onSubmit,
+  editingTask,
+  onCancelEdit,
+  busy,
+}) {
   const [form, setForm] = useState(initialState);
 
   useEffect(() => {
     if (editingTask) {
-      setForm({ title: editingTask.title, description: editingTask.description || "" });
+      setForm({
+        title: editingTask.title,
+        description: editingTask.description || "",
+      });
     } else {
       setForm(initialState);
     }
@@ -16,6 +24,10 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit, busy }) 
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit(form);
+    // Clear form only if we're creating a new task, not when editing
+    if (!editingTask) {
+      setForm(initialState);
+    }
   };
 
   return (
@@ -25,7 +37,9 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit, busy }) 
       <input
         id="title"
         value={form.title}
-        onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
+        onChange={(event) =>
+          setForm((prev) => ({ ...prev, title: event.target.value }))
+        }
         placeholder="Plan weekly sprint review"
         minLength={2}
         maxLength={120}
@@ -36,7 +50,9 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit, busy }) 
       <textarea
         id="description"
         value={form.description}
-        onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
+        onChange={(event) =>
+          setForm((prev) => ({ ...prev, description: event.target.value }))
+        }
         placeholder="Add notes, owners, and due context..."
         maxLength={400}
       />
@@ -46,7 +62,12 @@ export default function TaskForm({ onSubmit, editingTask, onCancelEdit, busy }) 
           {editingTask ? "Save Changes" : "Add Task"}
         </button>
         {editingTask ? (
-          <button type="button" className="btn btn-secondary" onClick={onCancelEdit} disabled={busy}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onCancelEdit}
+            disabled={busy}
+          >
             Cancel
           </button>
         ) : null}
