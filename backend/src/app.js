@@ -6,6 +6,7 @@ import { taskRouter } from "./routes/taskRoutes.js";
 
 export const app = express();
 
+// Allow multiple origins in production, e.g. local + Netlify.
 const allowedOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
   .split(",")
   .map((origin) => origin.trim())

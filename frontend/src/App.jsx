@@ -14,14 +14,24 @@ export default function App() {
     [tasks],
   );
 
-  const loadTasks = async () => {
+  // Standardize async UI state handling for all task mutations.
+  const runTaskAction = async (action) => {
+    setBusy(true);
     setError("");
     try {
-      const data = await taskApi.list();
-      setTasks(data);
+      await action();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setBusy(false);
     }
+  };
+
+  const loadTasks = async () => {
+    await runTaskAction(async () => {
+      const data = await taskApi.list();
+      setTasks(data);
+    });
   };
 
   useEffect(() => {
@@ -29,9 +39,7 @@ export default function App() {
   }, []);
 
   const handleSaveTask = async (payload) => {
-    setBusy(true);
-    setError("");
-    try {
+    await runTaskAction(async () => {
       if (editingTask) {
         const updated = await taskApi.update(editingTask.id, payload);
         setTasks((prev) =>
@@ -42,44 +50,28 @@ export default function App() {
         const created = await taskApi.create(payload);
         setTasks((prev) => [created, ...prev]);
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
+    });
   };
 
   const handleToggleComplete = async (task) => {
-    setBusy(true);
-    setError("");
-    try {
+    await runTaskAction(async () => {
       const updated = await taskApi.update(task.id, {
         completed: !task.completed,
       });
       setTasks((prev) =>
         prev.map((item) => (item.id === updated.id ? updated : item)),
       );
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
+    });
   };
 
   const handleDeleteTask = async (id) => {
-    setBusy(true);
-    setError("");
-    try {
+    await runTaskAction(async () => {
       await taskApi.remove(id);
       setTasks((prev) => prev.filter((task) => task.id !== id));
       if (editingTask?.id === id) {
         setEditingTask(null);
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
+    });
   };
 
   return (

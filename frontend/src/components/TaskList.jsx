@@ -1,4 +1,7 @@
 export default function TaskList({ tasks, onToggleComplete, onEdit, onDelete, busy }) {
+  const getStatusLabel = (completed) => (completed ? "Completed" : "In Progress");
+  const getToggleLabel = (completed) => (completed ? "Mark Incomplete" : "Mark Complete");
+
   if (!tasks.length) {
     return (
       <section className="card empty-state">
@@ -15,13 +18,13 @@ export default function TaskList({ tasks, onToggleComplete, onEdit, onDelete, bu
           <div className="task-top-row">
             <h3>{task.title}</h3>
             <span className={`pill ${task.completed ? "done" : "pending"}`}>
-              {task.completed ? "Completed" : "In Progress"}
+              {getStatusLabel(task.completed)}
             </span>
           </div>
           {task.description ? <p>{task.description}</p> : <p className="muted">No description</p>}
           <div className="task-actions">
             <button className="btn btn-tertiary" onClick={() => onToggleComplete(task)} disabled={busy}>
-              {task.completed ? "Mark Incomplete" : "Mark Complete"}
+              {getToggleLabel(task.completed)}
             </button>
             <button className="btn btn-secondary" onClick={() => onEdit(task)} disabled={busy}>
               Edit
